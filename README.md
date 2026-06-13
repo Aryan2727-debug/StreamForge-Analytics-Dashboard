@@ -48,36 +48,6 @@ The dashboard enables monitoring of:
 * Auto Refresh every 30 seconds
 * Real-time visibility into user actions
 
-### Authentication & Security
-
-* Google OAuth Integration
-* JWT-based Authentication
-* Session Tracking
-* Protected Analytics APIs
-
----
-
-## Architecture
-
-┌────────────────────────────┐
-│ StreamForge Video Player   │
-└─────────────┬──────────────┘
-│
-│ Analytics Events
-▼
-┌────────────────────────────┐
-│ StreamForge API            │
-│ Express + MongoDB          │
-└─────────────┬──────────────┘
-│
-│ Analytics Queries
-▼
-┌────────────────────────────┐
-│ Analytics Dashboard        │
-│ React + Recharts           │
-└────────────────────────────┘
-
----
 
 ## Analytics Flow
 
@@ -182,46 +152,6 @@ Each event captures:
 
 ---
 
-## Project Structure
-
-src/
-
-├── components/
-
-│   ├── SummaryCards.jsx
-
-│   ├── EventBreakdownChart.jsx
-
-│   ├── TopVideosChart.jsx
-
-│   ├── BreakdownChart.jsx
-
-│   └── EventsTable.jsx
-
-│
-
-├── pages/
-
-│   └── Dashboard.jsx
-
-│
-
-├── services/
-
-│   └── analyticsApi.js
-
-│
-
-├── config/
-
-│   └── api.js
-
-│
-
-└── App.jsx
-
----
-
 ## API Endpoints
 
 ### Dashboard Summary
@@ -316,7 +246,7 @@ Backend service responsible for:
 
 ## Author
 
-Aryandev Shourie
+Aryan Dev Shourie
 
 Frontend Engineer | Smart TV Developer | OTT Platform Engineer
 
