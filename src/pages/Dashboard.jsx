@@ -23,42 +23,64 @@ const Dashboard = () => {
     const [deviceData, setDeviceData] = useState([]);
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [lastUpdated, setLastUpdated] = useState(null);
+
+    const fetchDashboardData = async () => {
+        try {
+            const [
+                summaryData,
+                breakdownData,
+                topVideosData,
+                platformBreakdownData,
+                deviceBreakdownData,
+                environmentBreakdownData,
+                eventsData
+            ] = await Promise.all([
+                getAnalyticsSummary(),
+                getEventBreakdown(),
+                getTopVideos(),
+                getPlatformBreakdown(),
+                getDeviceBreakdown(),
+                getEnvironmentBreakdown(),
+                getAnalyticsEvents()
+            ]);
+
+            setSummary(summaryData);
+            setEventBreakdown(breakdownData);
+            setTopVideos(topVideosData);
+            setPlatformData(platformBreakdownData);
+            setDeviceData(deviceBreakdownData);
+            setEnvironmentData(environmentBreakdownData);
+            setEvents(eventsData);
+            setLastUpdated(new Date());
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        const fetchSummary = async () => {
-            try {
-                const [
-                    summaryData, 
-                    breakdownData, 
-                    topVideosData, 
-                    platformData, 
-                    environmentData, 
-                    deviceData,
-                    eventsData
-                ] = await Promise.all([
-                    getAnalyticsSummary(),
-                    getEventBreakdown(),
-                    getTopVideos(),
-                    getPlatformBreakdown(),
-                    getEnvironmentBreakdown(),
-                    getDeviceBreakdown(),
-                    getAnalyticsEvents()
-                ]);
-                setSummary(summaryData);
-                setEventBreakdown(breakdownData);
-                setTopVideos(topVideosData);
-                setPlatformData(platformData);
-                setEnvironmentData(environmentData);
-                setDeviceData(deviceData);
-                setEvents(eventsData);
-            } catch (error) {
-                console.error("Error fetching analytics summary:", error);
-            } finally {
-                setLoading(false);
+        let isMounted = true;
+
+        const loadData = async () => {
+            if (!isMounted) {
+                return;
             }
+            await fetchDashboardData();
         };
 
-        fetchSummary();
+        loadData();
+
+        const interval = setInterval(
+            loadData,
+            30000
+        );
+
+        return () => {
+            isMounted = false;
+            clearInterval(interval);
+        };
     }, []);
 
     if (loading) {
@@ -72,6 +94,17 @@ const Dashboard = () => {
     return (
         <div className="dashboard">
             <h1>StreamForge Analytics Dashboard</h1>
+            {
+                lastUpdated && (
+                    <span className="last-updated">
+                        Last Updated:
+                        {" "}
+                        {
+                            lastUpdated.toLocaleTimeString()
+                        }
+                    </span>
+                )
+            }
             <SummaryCards summary={summary} />
             <div className="charts-grid">
                 <EventBreakdownChart data={eventBreakdown} />
